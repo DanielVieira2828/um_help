@@ -1,0 +1,23 @@
+services:
+  pupper-mysql:
+    image: mysql:lts
+    healthcheck:
+      test: mysqladmin ping -proot
+    environment:
+      MYSQL_ROOT_PASSWORD: root # This is just an example, not intended to be a production configuration
+      MYSQL_DATABASE: pupper_example
+    ports:
+      - "3306:3306"
+    restart: always
+
+  pupper-redis:
+    image: redis:alpine
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+    environment:
+      REDIS_PASSWORD: root # This is just an example, not intended to be a production configuration
+    ports:
+      - "6379:6379"
+    restart: always

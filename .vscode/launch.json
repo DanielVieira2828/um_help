@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Package",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/main.go",
+      "env": {
+        "RUNNING_LOCAL": "true",
+        "SERVER_PORT": "8080",
+        "SERVICE_NAME": "pupper-example",
+
+        "MYSQL_HOST": "localhost",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USERNAME": "root",
+        "MYSQL_PASSWORD": "root",
+        "MYSQL_DATABASE": "pupper_example",
+
+        "REDIS_HOST": "localhost",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "root",
+        "REDIS_DATABASE": "0",
+      }
+    }
+  ]
+}
