@@ -3,8 +3,8 @@ package logger
 import (
 	"os"
 
+	"github.com/DanielVieirass/um_help/config"
 	"github.com/rs/zerolog"
-	"github.com/savi2w/pupper/config"
 )
 
 func New(cfg *config.Config) *zerolog.Logger {

@@ -3,9 +3,9 @@ package mysql
 import (
 	"time"
 
+	"github.com/DanielVieirass/um_help/config"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"github.com/savi2w/pupper/config"
 )
 
 type Repo struct {

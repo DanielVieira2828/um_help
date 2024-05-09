@@ -4,13 +4,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/DanielVieirass/um_help/config"
+	"github.com/DanielVieirass/um_help/logger"
+	"github.com/DanielVieirass/um_help/repo"
+	"github.com/DanielVieirass/um_help/server"
+	"github.com/DanielVieirass/um_help/server/controller"
+	"github.com/DanielVieirass/um_help/service"
 	"github.com/rs/zerolog"
-	"github.com/savi2w/pupper/config"
-	"github.com/savi2w/pupper/logger"
-	"github.com/savi2w/pupper/repo"
-	"github.com/savi2w/pupper/server"
-	"github.com/savi2w/pupper/server/controller"
-	"github.com/savi2w/pupper/service"
 )
 
 func main() {

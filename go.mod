@@ -1,4 +1,4 @@
-module github.com/savi2w/pupper
+module github.com/DanielVieirass/um_help
 
 go 1.21.0
 

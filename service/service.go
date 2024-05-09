@@ -1,9 +1,9 @@
 package service
 
 import (
+	"github.com/DanielVieirass/um_help/config"
+	"github.com/DanielVieirass/um_help/repo"
 	"github.com/rs/zerolog"
-	"github.com/savi2w/pupper/config"
-	"github.com/savi2w/pupper/repo"
 )
 
 type Service struct {

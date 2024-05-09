@@ -3,8 +3,8 @@ package health
 import (
 	"net/http"
 
+	"github.com/DanielVieirass/um_help/util/resutil"
 	"github.com/labstack/echo/v4"
-	"github.com/savi2w/pupper/util/resutil"
 )
 
 type Controller struct {

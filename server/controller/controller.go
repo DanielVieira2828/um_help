@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"github.com/DanielVieirass/um_help/server/controller/health"
+	"github.com/DanielVieirass/um_help/service"
+	"github.com/DanielVieirass/um_help/util/resutil"
 	"github.com/rs/zerolog"
-	"github.com/savi2w/pupper/server/controller/health"
-	"github.com/savi2w/pupper/service"
-	"github.com/savi2w/pupper/util/resutil"
 )
 
 type Controller struct {

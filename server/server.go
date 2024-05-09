@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/DanielVieirass/um_help/config"
+	"github.com/DanielVieirass/um_help/server/controller"
+	"github.com/DanielVieirass/um_help/server/middleware"
+	"github.com/DanielVieirass/um_help/server/router"
 	echoadapter "github.com/awslabs/aws-lambda-go-api-proxy/echo"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
-	"github.com/savi2w/pupper/config"
-	"github.com/savi2w/pupper/server/controller"
-	"github.com/savi2w/pupper/server/middleware"
-	"github.com/savi2w/pupper/server/router"
 )
 
 var (

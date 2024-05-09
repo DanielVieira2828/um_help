@@ -3,9 +3,9 @@ package redis
 import (
 	"context"
 
+	"github.com/DanielVieirass/um_help/config"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/redis/go-redis/v9"
-	"github.com/savi2w/pupper/config"
 )
 
 type Repo struct {
