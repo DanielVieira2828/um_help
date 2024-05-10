@@ -7,30 +7,28 @@ import (
 	"github.com/DanielVieirass/um_help/util/resutil"
 	"github.com/DanielVieirass/um_help/validation"
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog"
 )
 
 type Controller struct {
-	logger  *zerolog.Logger
 	resutil *resutil.ResUtil
 	svc     *service.Service
 }
 
-func New(resutil *resutil.ResUtil, logger *zerolog.Logger, svc *service.Service) *Controller {
+func New(svc *service.Service, resutil *resutil.ResUtil) *Controller {
 	return &Controller{
-		logger:  logger,
 		resutil: resutil,
 		svc:     svc,
 	}
 }
 
 func (ctrl *Controller) HandleNewUser(ctx echo.Context) error {
+	println((ctx.Request().Body))
 	req, err := validation.VerifyNewUserRequest(ctx.Request().Body)
 	if err != nil {
 		return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusBadRequest))
 	}
 
-	if err := ctrl.svc.User.NewUser(ctx.Request().Context(), req); err != nil {
+	if err := ctrl.svc.User.New(ctx.Request().Context(), req); err != nil {
 		return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusInternalServerError))
 	}
 

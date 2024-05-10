@@ -5,33 +5,34 @@ import (
 
 	"github.com/DanielVieirass/um_help/config"
 	"github.com/DanielVieirass/um_help/model"
+	"github.com/DanielVieirass/um_help/presenter/req"
 	"github.com/DanielVieirass/um_help/repo"
 	"github.com/rs/zerolog"
 )
 
 type UserService struct {
-	Config *config.Config
-	Logger *zerolog.Logger
-	Repo   *repo.RepoManager
+	config *config.Config
+	logger *zerolog.Logger
+	repo   *repo.RepoManager
 }
 
-func NewUserService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *UserService {
+func newUserService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *UserService {
 	return &UserService{
-		Config: cfg,
-		Logger: logger,
-		Repo:   repo,
+		config: cfg,
+		logger: logger,
+		repo:   repo,
 	}
 }
 
-func (s *UserService) NewUser(ctx context.Context, r *req.NewUser) error {
+func (s *UserService) New(ctx context.Context, r *req.NewUser) error {
 	user := &model.User{
 		FirstName:      r.FirstName,
 		LastName:       r.LastName,
 		DocumentNumber: r.DocumentNumber,
-		Balance:        0,
+		Balance:        10000,
 	}
 
-	s.Logger.Info().Msgf("creating user %s", user.DocumentNumber)
+	s.logger.Info().Msgf("creating user %s", user.DocumentNumber)
 
-	return s.Repo.MySQL.User.InsertUser(ctx, user)
+	return s.repo.MySQL.User.InsertUser(ctx, user)
 }

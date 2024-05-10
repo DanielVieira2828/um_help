@@ -10,13 +10,13 @@
       "env": {
         "RUNNING_LOCAL": "true",
         "SERVER_PORT": "8080",
-        "SERVICE_NAME": "pupper-example",
+        "SERVICE_NAME": "um_help",
 
         "MYSQL_HOST": "localhost",
         "MYSQL_PORT": "3306",
         "MYSQL_USERNAME": "root",
         "MYSQL_PASSWORD": "root",
-        "MYSQL_DATABASE": "pupper_example",
+        "MYSQL_DATABASE": "um_help",
 
         "REDIS_HOST": "localhost",
         "REDIS_PORT": "6379",

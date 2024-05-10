@@ -3,9 +3,9 @@ package model
 import "time"
 
 type transaction struct {
-	id          int       `json:"id"`
-	sender_id   int       `json:"sender_id"`
-	receiver_id int       `json:"receiver_id"`
-	amount      int       `json:"amount"`
-	createdAt   time.Time `json:"createdAt"`
+	id          int       `db:"id"`
+	sender_id   int       `db:"sender_id"`
+	receiver_id int       `db:"receiver_id"`
+	amount      int       `db:"amount"`
+	createdAt   time.Time `db:"createdAt"`
 }

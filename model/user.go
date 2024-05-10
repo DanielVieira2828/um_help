@@ -3,12 +3,12 @@ package model
 import "time"
 
 type User struct {
-	id             int       `json:"id"`
-	FirstName      string    `json:"name"`
+	Id             int       `json:"id"`
+	FirstName      string    `json:"first_name"`
 	LastName       string    `json:"last_name"`
 	DocumentNumber string    `json:"document_number"`
 	Balance        int       `json:"balance"`
-	createdAt      time.Time `json:"createdAt"`
-	updatedAt      time.Time `json:"updatedAt"`
-	deleted        time.Time `json:"deleted"`
+	CreatedAt      time.Time `json:"createdAt"`
+	UpdatedAt      time.Time `json:"updatedAt"`
+	Deleted        time.Time `json:"deleted"`
 }
