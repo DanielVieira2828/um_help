@@ -5,7 +5,7 @@ services:
       test: mysqladmin ping -proot
     environment:
       MYSQL_ROOT_PASSWORD: root # This is just an example, not intended to be a production configuration
-      MYSQL_DATABASE: pupper_example
+      MYSQL_DATABASE: um_help
     ports:
       - "3306:3306"
     restart: always
