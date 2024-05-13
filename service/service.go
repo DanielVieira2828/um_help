@@ -7,11 +7,16 @@ import (
 )
 
 type Service struct {
-	User *UserService
+	User   *UserService
+	Wallet *WalletService
 }
 
 func New(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *Service {
+	walletService := newWalletService(cfg, logger, repo)
+	userService := newUserService(cfg, logger, repo, walletService)
+
 	return &Service{
-		User: newUserService(cfg, logger, repo),
+		User:   userService,
+		Wallet: walletService,
 	}
 }

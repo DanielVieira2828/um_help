@@ -11,28 +11,41 @@ import (
 )
 
 type UserService struct {
-	config *config.Config
-	logger *zerolog.Logger
-	repo   *repo.RepoManager
+	config        *config.Config
+	logger        *zerolog.Logger
+	repo          *repo.RepoManager
+	walletService *WalletService
 }
 
-func newUserService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *UserService {
+func newUserService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager, walletService *WalletService) *UserService {
 	return &UserService{
-		config: cfg,
-		logger: logger,
-		repo:   repo,
+		config:        cfg,
+		logger:        logger,
+		repo:          repo,
+		walletService: walletService,
 	}
 }
+
+const BRL = 1
 
 func (s *UserService) New(ctx context.Context, r *req.NewUser) error {
 	user := &model.User{
 		FirstName:      r.FirstName,
 		LastName:       r.LastName,
 		DocumentNumber: r.DocumentNumber,
-		Balance:        10000,
 	}
 
 	s.logger.Info().Msgf("creating user %s", user.DocumentNumber)
 
-	return s.repo.MySQL.User.InsertUser(ctx, user)
+	userID, err := s.repo.MySQL.User.InsertUser(ctx, user)
+	if err != nil {
+		return err
+	}
+
+	err = s.walletService.New(ctx, userID, BRL, "Default Wallet")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

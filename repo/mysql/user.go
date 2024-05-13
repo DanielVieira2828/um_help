@@ -11,15 +11,20 @@ type User struct {
 	cli *sqlx.DB
 }
 
-func (r *User) InsertUser(ctx context.Context, user *model.User) error {
-	query := "INSERT INTO um_help.tab_user (first_name, last_name, document_number, balance) VALUES (?, ?, ?, ?);"
+func (r *User) InsertUser(ctx context.Context, user *model.User) (userId int64, err error) {
+	query := "INSERT INTO um_help.tab_user (first_name, last_name, document_number) VALUES (?, ?, ?);"
 
-	_, err := r.cli.ExecContext(ctx, query, user.FirstName, user.LastName, user.DocumentNumber, user.Balance)
+	result, err := r.cli.ExecContext(ctx, query, user.FirstName, user.LastName, user.DocumentNumber)
 
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	userID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return userID, nil
 
 }

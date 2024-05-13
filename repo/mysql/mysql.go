@@ -9,7 +9,8 @@ import (
 )
 
 type Repo struct {
-	User *User
+	User   *User
+	Wallet *Wallet
 
 	cli *sqlx.DB
 }
@@ -31,7 +32,8 @@ func New(cfg *config.Config) (*Repo, error) {
 	}
 
 	return &Repo{
-		User: &User{cli: cli},
+		User:   &User{cli: cli},
+		Wallet: &Wallet{cli: cli},
 
 		cli: cli,
 	}, nil
