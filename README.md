@@ -1,4 +1,4 @@
-# Pupper
+# um_help challenge
 
 A golang http server used for training
 
