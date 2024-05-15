@@ -15,7 +15,7 @@ func SetMiddlewares(e *echo.Echo, cfg *config.Config) {
 
 	if !cfg.InternalConfig.RunningLocal {
 		// e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		// 	AllowOrigins: []string{"pupper-example.com"},
+		// 	AllowOrigins: []string{"example.com"},
 		// }))
 
 		e.Use(middleware.ContextTimeout(consts.Timeout))

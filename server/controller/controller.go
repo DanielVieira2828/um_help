@@ -18,5 +18,6 @@ func New(svc *service.Service, logger *zerolog.Logger) *Controller {
 
 	return &Controller{
 		HealthController: health.New(resutil),
+		UserController:   user.New(svc, resutil),
 	}
 }

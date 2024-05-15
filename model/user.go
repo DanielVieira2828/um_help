@@ -3,11 +3,10 @@ package model
 import "time"
 
 type User struct {
-	Id             int       `json:"id"`
-	FirstName      string    `json:"first_name"`
-	LastName       string    `json:"last_name"`
-	DocumentNumber string    `json:"document_number"`
-	CreatedAt      time.Time `json:"createdAt"`
-	UpdatedAt      time.Time `json:"updatedAt"`
-	Deleted        time.Time `json:"deleted"`
+	Id             int64     `db:"user_id"`
+	FirstName      string    `db:"first_name"`
+	LastName       string    `db:"last_name"`
+	DocumentNumber string    `db:"document_number"`
+	CreatedAt      time.Time `db:"created_at"`
+	UpdatedAt      time.Time `db:"updated_at"`
 }

@@ -9,5 +9,6 @@ import (
 func Register(cfg *config.Config, svr *echo.Echo, ctrl *controller.Controller) {
 	root := svr.Group("")
 	root.GET("/health", ctrl.HealthController.HealthCheck)
+
 	root.POST("/user", ctrl.UserController.HandleNewUser)
 }

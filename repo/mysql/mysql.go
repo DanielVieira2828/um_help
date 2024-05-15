@@ -1,6 +1,8 @@
 package mysql
 
 import (
+	"context"
+	"database/sql"
 	"time"
 
 	"github.com/DanielVieirass/um_help/config"
@@ -9,8 +11,9 @@ import (
 )
 
 type Repo struct {
-	User   *User
-	Wallet *Wallet
+	Currency *Currency
+	User     *User
+	Wallet   *Wallet
 
 	cli *sqlx.DB
 }
@@ -32,9 +35,16 @@ func New(cfg *config.Config) (*Repo, error) {
 	}
 
 	return &Repo{
-		User:   &User{cli: cli},
-		Wallet: &Wallet{cli: cli},
+		Currency: &Currency{cli: cli},
+		User:     &User{cli: cli},
+		Wallet:   &Wallet{cli: cli},
 
 		cli: cli,
 	}, nil
+}
+
+func (r *Repo) BeginReadCommittedTx(ctx context.Context) (*sqlx.Tx, error) {
+	return r.cli.BeginTxx(ctx, &sql.TxOptions{
+		Isolation: sql.LevelReadCommitted,
+	})
 }

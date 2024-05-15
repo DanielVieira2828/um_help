@@ -10,7 +10,7 @@
       "env": {
         "RUNNING_LOCAL": "true",
         "SERVER_PORT": "8080",
-        "SERVICE_NAME": "um_help",
+        "SERVICE_NAME": "nano-go",
 
         "MYSQL_HOST": "localhost",
         "MYSQL_PORT": "3306",

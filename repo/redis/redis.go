@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"time"
 
 	"github.com/DanielVieirass/um_help/config"
 	_ "github.com/go-sql-driver/mysql"
@@ -9,8 +10,6 @@ import (
 )
 
 type Repo struct {
-	Util *Util
-
 	cli *redis.Client
 }
 
@@ -27,9 +26,27 @@ func New(cfg *config.Config) (*Repo, error) {
 		return nil, err
 	}
 
-	return &Repo{
-		Util: &Util{cli: cli},
+	return &Repo{cli: cli}, nil
+}
 
-		cli: cli,
-	}, nil
+func (r *Repo) SetString(ctx context.Context, k string, v string, e time.Duration) error {
+	if _, err := r.cli.Set(ctx, k, v, e).Result(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Repo) GetString(ctx context.Context, k string) (string, error) {
+	v, err := r.cli.Get(ctx, k).Result()
+
+	if err != nil {
+		if err == redis.Nil {
+			return "", nil
+		}
+
+		return "", err
+	}
+
+	return v, nil
 }

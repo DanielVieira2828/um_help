@@ -8,7 +8,6 @@ import (
 	"github.com/DanielVieirass/um_help/server/controller"
 	"github.com/DanielVieirass/um_help/server/middleware"
 	"github.com/DanielVieirass/um_help/server/router"
-	echoadapter "github.com/awslabs/aws-lambda-go-api-proxy/echo"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 )
@@ -20,7 +19,7 @@ var (
 
 type Server struct {
 	cfg    *config.Config
-	svr    *echoadapter.EchoLambda
+	svr    *echo.Echo
 	logger *zerolog.Logger
 	ctrl   *controller.Controller
 }
@@ -37,7 +36,7 @@ func New(cfg *config.Config, logger *zerolog.Logger, ctrl *controller.Controller
 
 		instance = &Server{
 			cfg:    cfg,
-			svr:    echoadapter.New(svr),
+			svr:    svr,
 			logger: logger,
 			ctrl:   ctrl,
 		}
@@ -49,7 +48,7 @@ func New(cfg *config.Config, logger *zerolog.Logger, ctrl *controller.Controller
 func (s *Server) Start() error {
 	s.logger.Info().Msg("starting server")
 
-	if err := s.svr.Echo.Start(fmt.Sprintf(":%d", s.cfg.InternalConfig.ServerPort)); err != nil {
+	if err := s.svr.Start(fmt.Sprintf(":%d", s.cfg.InternalConfig.ServerPort)); err != nil {
 		return err
 	}
 

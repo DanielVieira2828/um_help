@@ -1,6 +1,6 @@
 # Pupper
 
-Pupper is a simple Golang boilerplate aiming to be the starting point of a scalable HTTP server
+A golang http server used for training
 
 ## License
 
