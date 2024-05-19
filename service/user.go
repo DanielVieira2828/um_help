@@ -2,20 +2,21 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/DanielVieirass/um_help/config"
 	"github.com/DanielVieirass/um_help/model"
 	"github.com/DanielVieirass/um_help/presenter/req"
 	"github.com/DanielVieirass/um_help/repo"
+	"github.com/DanielVieirass/um_help/util/cryptoutil"
 	"github.com/rs/zerolog"
 )
 
 type UserService struct {
-	config *config.Config
-	logger *zerolog.Logger
-	repo   *repo.RepoManager
+	config     *config.Config
+	logger     *zerolog.Logger
+	cryptoutil *cryptoutil.Cryptoutil
+	repo       *repo.RepoManager
 }
 
 func newUserService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *UserService {
@@ -26,49 +27,44 @@ func newUserService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoM
 	}
 }
 
-func (s *UserService) New(ctx context.Context, r *req.NewUser) (u *model.User, err error) {
-	user := &model.User{
+func (s *UserService) New(ctx context.Context, r *req.NewUser) error {
+	user := model.User{
 		FirstName:      r.FirstName,
 		LastName:       r.LastName,
 		DocumentNumber: r.DocumentNumber,
+		Password:       s.cryptoutil.HashPassword(r.Password),
 	}
 
 	tx, err := s.repo.MySQL.BeginReadCommittedTx(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer tx.Rollback()
 
-	userId, err := s.repo.MySQL.User.Insert(tx, ctx, user)
+	userId, err := s.repo.MySQL.User.Insert(tx, ctx, &user)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	user.Id = userId
-
-	currency, found, err := s.repo.MySQL.Currency.SelectByCurrencyCode(tx, ctx, model.CurrencyBRL)
+	currency, _, err := s.repo.MySQL.Currency.SelectByCurrencyCode(tx, ctx, model.CurrencyBRL)
 	if err != nil {
-		return nil, err
-	}
-
-	if !found {
-		return nil, fmt.Errorf("cannot find `%s` currency in database", model.CurrencyBRL)
+		return err
 	}
 
 	w := &model.Wallet{
-		OwnerId:    user.Id,
+		OwnerId:    userId,
 		CurrencyId: currency.Id,
 		Alias:      strings.Join([]string{user.FirstName + "'s", "Wallet"}, " "),
 	}
 
 	if err := s.repo.MySQL.Wallet.Insert(tx, ctx, w); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return nil, err
+		return err
 	}
 
-	return user, nil
+	return nil
 }

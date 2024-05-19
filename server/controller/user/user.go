@@ -3,7 +3,6 @@ package user
 import (
 	"net/http"
 
-	"github.com/DanielVieirass/um_help/presenter/res"
 	"github.com/DanielVieirass/um_help/service"
 	"github.com/DanielVieirass/um_help/util/resutil"
 	"github.com/DanielVieirass/um_help/validation"
@@ -28,14 +27,9 @@ func (ctrl *Controller) HandleNewUser(ctx echo.Context) error {
 		return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusBadRequest))
 	}
 
-	user, err := ctrl.svc.User.New(ctx.Request().Context(), req)
-	if err != nil {
+	if err := ctrl.svc.User.New(ctx.Request().Context(), req); err != nil {
 		return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusInternalServerError))
 	}
 
-	res := &res.User{
-		Id: user.Id,
-	}
-
-	return ctx.JSON(ctrl.resutil.Wrap(res, nil, http.StatusCreated))
+	return ctx.JSON(ctrl.resutil.Wrap(nil, nil, http.StatusCreated))
 }

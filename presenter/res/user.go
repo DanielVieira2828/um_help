@@ -1,5 +1,5 @@
 package res
 
-type User struct {
-	Id int64 `json:"userId"`
-}
+// type User struct {
+// 	PublicID string `json:"publicId"`
+// }

@@ -11,4 +11,6 @@ func Register(cfg *config.Config, svr *echo.Echo, ctrl *controller.Controller) {
 	root.GET("/health", ctrl.HealthController.HealthCheck)
 
 	root.POST("/user", ctrl.UserController.HandleNewUser)
+
+	root.POST("/login", ctrl.AuthController.HandleLogin)
 }
