@@ -1,9 +1,12 @@
 package auth
 
 import (
-	"github.com/DanielVieirass/um_help/service"
-	"github.com/DanielVieirass/um_help/util/resutil"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
+	"github.com/savi2w/nano-go/service"
+	"github.com/savi2w/nano-go/util/resutil"
+	"github.com/savi2w/nano-go/validation"
 )
 
 type Controller struct {
@@ -19,21 +22,15 @@ func New(svc *service.Service, resutil *resutil.ResUtil) *Controller {
 }
 
 func (ctrl *Controller) HandleLogin(ctx echo.Context) error {
-	// req, err := validation.VerifyNewUserRequest(ctx.Request().Body)
-	// if err != nil {
-	// 	return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusBadRequest))
-	// }
+	req, err := validation.VerifyLoginRequest(ctx.Request().Body)
+	if err != nil {
+		return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusBadRequest))
+	}
 
-	// user, err := ctrl.svc.User.New(ctx.Request().Context(), req)
-	// if err != nil {
-	// 	return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusInternalServerError))
-	// }
+	resp, err := ctrl.svc.Auth.Login(ctx.Request().Context(), req)
+	if err != nil {
+		return ctx.JSON(ctrl.resutil.Wrap(nil, err, http.StatusUnauthorized))
+	}
 
-	// res := &res.User{
-	// 	Id: user.Id,
-	// }
-
-	// return ctx.JSON(ctrl.resutil.Wrap(res, nil, http.StatusCreated))
-
-	return ctx.JSON(ctrl.resutil.Wrap(nil, nil, 200))
+	return ctx.JSON(ctrl.resutil.Wrap(resp, nil, http.StatusOK))
 }
