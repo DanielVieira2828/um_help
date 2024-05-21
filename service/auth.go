@@ -19,11 +19,12 @@ type AuthService struct {
 	repo       *repo.RepoManager
 }
 
-func newAuthService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *AuthService {
+func newAuthService(cfg *config.Config, cryptoutil *cryptoutil.Cryptoutil, logger *zerolog.Logger, repo *repo.RepoManager) *AuthService {
 	return &AuthService{
-		config: cfg,
-		logger: logger,
-		repo:   repo,
+		config:     cfg,
+		cryptoutil: cryptoutil,
+		logger:     logger,
+		repo:       repo,
 	}
 }
 

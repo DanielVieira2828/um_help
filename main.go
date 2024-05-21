@@ -19,10 +19,14 @@ func main() {
 
 	repo, err := repo.New(cfg)
 	if err != nil {
-		end(logger, err, "failed to initialize repo manager")
+		end(logger, err, "failed to initialize repo")
 	}
 
-	svc := service.New(cfg, logger, repo)
+	svc, err := service.New(cfg, logger, repo)
+	if err != nil {
+		end(logger, err, "failed to initialize svc")
+	}
+
 	ctrl := controller.New(svc, logger)
 
 	svr := server.New(cfg, logger, ctrl)

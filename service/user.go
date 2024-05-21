@@ -14,16 +14,17 @@ import (
 
 type UserService struct {
 	config     *config.Config
-	logger     *zerolog.Logger
 	cryptoutil *cryptoutil.Cryptoutil
+	logger     *zerolog.Logger
 	repo       *repo.RepoManager
 }
 
-func newUserService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *UserService {
+func newUserService(cfg *config.Config, cryptoutil *cryptoutil.Cryptoutil, logger *zerolog.Logger, repo *repo.RepoManager) *UserService {
 	return &UserService{
-		config: cfg,
-		logger: logger,
-		repo:   repo,
+		config:     cfg,
+		cryptoutil: cryptoutil,
+		logger:     logger,
+		repo:       repo,
 	}
 }
 
