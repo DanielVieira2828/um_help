@@ -3,10 +3,10 @@ package auth
 import (
 	"net/http"
 
+	"github.com/DanielVieirass/um_help/service"
+	"github.com/DanielVieirass/um_help/util/resutil"
+	"github.com/DanielVieirass/um_help/validation"
 	"github.com/labstack/echo/v4"
-	"github.com/savi2w/nano-go/service"
-	"github.com/savi2w/nano-go/util/resutil"
-	"github.com/savi2w/nano-go/validation"
 )
 
 type Controller struct {

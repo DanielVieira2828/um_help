@@ -4,9 +4,14 @@ import (
 	"crypto/ed25519"
 	"crypto/hmac"
 	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"time"
 
 	"github.com/DanielVieirass/um_help/config"
+	"github.com/go-jose/go-jose/v4"
 	"golang.org/x/crypto/sha3"
+	"golang.org/x/crypto/ssh"
 )
 
 type Cryptoutil struct {

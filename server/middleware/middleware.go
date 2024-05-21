@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/DanielVieirass/um_help/config"
 	"github.com/DanielVieirass/um_help/consts"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )

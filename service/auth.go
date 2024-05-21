@@ -1,15 +1,22 @@
 package service
 
 import (
+	"context"
+	"errors"
+
 	"github.com/DanielVieirass/um_help/config"
+	"github.com/DanielVieirass/um_help/presenter/req"
+	"github.com/DanielVieirass/um_help/presenter/res"
 	"github.com/DanielVieirass/um_help/repo"
+	"github.com/DanielVieirass/um_help/util/cryptoutil"
 	"github.com/rs/zerolog"
 )
 
 type AuthService struct {
-	config *config.Config
-	logger *zerolog.Logger
-	repo   *repo.RepoManager
+	config     *config.Config
+	cryptoutil *cryptoutil.Cryptoutil
+	logger     *zerolog.Logger
+	repo       *repo.RepoManager
 }
 
 func newAuthService(cfg *config.Config, logger *zerolog.Logger, repo *repo.RepoManager) *AuthService {
@@ -34,7 +41,7 @@ func (s *AuthService) Login(ctx context.Context, r *req.LoginRequest) (*res.Logi
 		return nil, errors.New("wrong credentials")
 	}
 
-	jws, expirationTime, err := s.cryptoutil.SignUserID(user.ID)
+	jws, expirationTime, err := s.cryptoutil.SignUserID(user.Id)
 	if err != nil {
 		return nil, err
 	}
