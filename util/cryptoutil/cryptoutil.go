@@ -71,42 +71,62 @@ func New(cfg *config.Config) (*Cryptoutil, error) {
 	}, nil
 }
 
-type Claims struct {
+func (c *Cryptoutil) signClaims(claims interface{}) (string, error) {
+
+	signer, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.EdDSA, Key: c.privateKey}, nil)
+	if err != nil {
+		return "", err
+	}
+
+	payload, err := json.Marshal(claims)
+	if err != nil {
+		return "", err
+	}
+
+	jws, err := signer.Sign(payload)
+	if err != nil {
+		return "", err
+	}
+
+	result, err := jws.CompactSerialize()
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
+}
+
+type TokenClaims struct {
 	Issuer         string `json:"iss"`
 	IssuedAt       int64  `json:"iat"`
 	Subject        int64  `json:"sub"`
 	ExpirationTime int64  `json:"exp"`
 }
 
-func (c *Cryptoutil) SignUserID(userID int64) (string, int64, error) {
+type RefreshTokenClaims struct {
+	Subject string `json:"sub"`
+}
+
+type SignResult struct {
+	Token          string
+	ExpirationTime int64
+	RefreshToken   string
+}
+
+func (c *Cryptoutil) SignUserID(userID int64) (*SignResult, error) {
 	now := time.Now().Unix()
 	expirationTime := time.Now().Add(time.Hour * time.Duration(c.config.CryptoConfig.JWSExpirationTimeInHours)).Unix()
 
-	claims := Claims{
+	claims := &TokenClaims{
 		Issuer:         c.config.InternalConfig.ServiceName,
 		IssuedAt:       now,
 		Subject:        userID,
 		ExpirationTime: expirationTime,
 	}
 
-	signer, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.EdDSA, Key: c.privateKey}, nil)
+	token, err := c.signClaims(claims)
 	if err != nil {
-		return "", 0, err
-	}
-
-	payload, err := json.Marshal(claims)
-	if err != nil {
-		return "", 0, err
-	}
-
-	jws, err := signer.Sign(payload)
-	if err != nil {
-		return "", 0, err
-	}
-
-	token, err := jws.CompactSerialize()
-	if err != nil {
-		return "", 0, err
+		return nil, err
 	}
 
 	return token, expirationTime, nil
