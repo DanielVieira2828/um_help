@@ -8,6 +8,7 @@ import (
 	"github.com/DanielVieirass/um_help/server/controller"
 	"github.com/DanielVieirass/um_help/server/middleware"
 	"github.com/DanielVieirass/um_help/server/router"
+	"github.com/DanielVieirass/um_help/util/cryptoutil"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 )
@@ -18,13 +19,14 @@ var (
 )
 
 type Server struct {
-	cfg    *config.Config
-	svr    *echo.Echo
-	logger *zerolog.Logger
-	ctrl   *controller.Controller
+	cfg        *config.Config
+	svr        *echo.Echo
+	logger     *zerolog.Logger
+	ctrl       *controller.Controller
+	cryptoutil *cryptoutil.Cryptoutil
 }
 
-func New(cfg *config.Config, logger *zerolog.Logger, ctrl *controller.Controller) *Server {
+func New(cfg *config.Config, logger *zerolog.Logger, cryptoutil *cryptoutil.Cryptoutil, ctrl *controller.Controller) *Server {
 	once.Do(func() {
 		svr := echo.New()
 
@@ -32,13 +34,14 @@ func New(cfg *config.Config, logger *zerolog.Logger, ctrl *controller.Controller
 		svr.HidePort = true
 
 		middleware.SetMiddlewares(svr, cfg)
-		router.Register(cfg, svr, ctrl)
+		router.Register(cfg, logger, svr, cryptoutil, ctrl)
 
 		instance = &Server{
-			cfg:    cfg,
-			svr:    svr,
-			logger: logger,
-			ctrl:   ctrl,
+			cfg:        cfg,
+			svr:        svr,
+			logger:     logger,
+			ctrl:       ctrl,
+			cryptoutil: cryptoutil,
 		}
 	})
 

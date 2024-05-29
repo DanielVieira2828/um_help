@@ -10,6 +10,7 @@ import (
 	"github.com/DanielVieirass/um_help/server"
 	"github.com/DanielVieirass/um_help/server/controller"
 	"github.com/DanielVieirass/um_help/service"
+	"github.com/DanielVieirass/um_help/util/cryptoutil"
 	"github.com/rs/zerolog"
 )
 
@@ -27,9 +28,14 @@ func main() {
 		end(logger, err, "failed to initialize svc")
 	}
 
+	crypto, err := cryptoutil.New(cfg)
+	if err != nil {
+		end(logger, err, "failed to initialize cryptoutil")
+	}
+
 	ctrl := controller.New(svc, logger)
 
-	svr := server.New(cfg, logger, ctrl)
+	svr := server.New(cfg, logger, crypto, ctrl)
 
 	if err := svr.Start(); err != nil {
 		end(logger, err, "failed to start server")

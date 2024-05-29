@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/DanielVieirass/um_help/config"
+	"github.com/DanielVieirass/um_help/consts"
 	"github.com/go-jose/go-jose/v4"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/sha3"
@@ -103,10 +104,12 @@ type TokenClaims struct {
 	IssuedAt       int64  `json:"iat"`
 	Subject        int64  `json:"sub"`
 	ExpirationTime int64  `json:"exp"`
+	Type           string `json:"typ"`
 }
 
 type RefreshTokenClaims struct {
 	SignId string `json:"jwi"`
+	Type   string `json:"typ"`
 }
 
 type SignResult struct {
@@ -126,6 +129,7 @@ func (c *Cryptoutil) SignUser(userID int64) (*SignResult, error) {
 		IssuedAt:       now,
 		Subject:        userID,
 		ExpirationTime: expirationTime,
+		Type:           consts.AcessTokenType,
 	}
 
 	jws, err := c.signClaims(claims)
@@ -135,6 +139,7 @@ func (c *Cryptoutil) SignUser(userID int64) (*SignResult, error) {
 
 	refreshClaims := &RefreshTokenClaims{
 		SignId: claims.SignId,
+		Type:   consts.RefreshTokenType,
 	}
 
 	refreshToken, err := c.signClaims(refreshClaims)
@@ -148,6 +153,24 @@ func (c *Cryptoutil) SignUser(userID int64) (*SignResult, error) {
 		ExpirationTime: expirationTime,
 		RefreshToken:   refreshToken,
 	}, nil
+}
+
+func (c *Cryptoutil) VerifyJWS(jws string, value interface{}) error {
+	object, err := jose.ParseSigned(jws, []jose.SignatureAlgorithm{jose.EdDSA})
+	if err != nil {
+		return err
+	}
+
+	payload, err := object.Verify(c.publicKey)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(payload, value); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *Cryptoutil) HashString(str string) string {
