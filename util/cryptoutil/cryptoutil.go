@@ -10,6 +10,7 @@ import (
 
 	"github.com/DanielVieirass/um_help/config"
 	"github.com/go-jose/go-jose/v4"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/sha3"
 	"golang.org/x/crypto/ssh"
 )
@@ -97,6 +98,7 @@ func (c *Cryptoutil) signClaims(claims interface{}) (string, error) {
 }
 
 type TokenClaims struct {
+	UUID           string `json:"jti"`
 	Issuer         string `json:"iss"`
 	IssuedAt       int64  `json:"iat"`
 	Subject        int64  `json:"sub"`
@@ -108,31 +110,47 @@ type RefreshTokenClaims struct {
 }
 
 type SignResult struct {
-	Token          string
-	ExpirationTime int64
-	RefreshToken   string
+	SignId         string `json:"sign_id"`
+	JWS            string `json:"jws"`
+	ExpirationTime int64  `json:"exp"`
+	RefreshToken   string `json:"refresh_token"`
 }
 
-func (c *Cryptoutil) SignUserID(userID int64) (*SignResult, error) {
+func (c *Cryptoutil) SignUser(userID int64) (*SignResult, error) {
 	now := time.Now().Unix()
 	expirationTime := time.Now().Add(time.Hour * time.Duration(c.config.CryptoConfig.JWSExpirationTimeInHours)).Unix()
 
 	claims := &TokenClaims{
+		UUID:           uuid.New().String(),
 		Issuer:         c.config.InternalConfig.ServiceName,
 		IssuedAt:       now,
 		Subject:        userID,
 		ExpirationTime: expirationTime,
 	}
 
-	token, err := c.signClaims(claims)
+	jws, err := c.signClaims(claims)
 	if err != nil {
 		return nil, err
 	}
 
-	return token, expirationTime, nil
+	refreshClaims := &RefreshTokenClaims{
+		Subject: claims.UUID,
+	}
+
+	refreshToken, err := c.signClaims(refreshClaims)
+	if err != nil {
+		return nil, err
+	}
+
+	return &SignResult{
+		SignId:         claims.UUID,
+		JWS:            jws,
+		ExpirationTime: expirationTime,
+		RefreshToken:   refreshToken,
+	}, nil
 }
 
-func (c *Cryptoutil) HashPassword(str string) string {
+func (c *Cryptoutil) HashString(str string) string {
 	hasher := hmac.New(sha3.New256, []byte(c.config.CryptoConfig.HS256Password))
 	hasher.Write([]byte(str))
 

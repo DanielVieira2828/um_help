@@ -38,18 +38,23 @@ func (s *AuthService) Login(ctx context.Context, r *req.LoginRequest) (*res.Logi
 		return nil, errors.New("user not found")
 	}
 
-	if s.cryptoutil.HashPassword(r.Password) != user.Password {
+	if s.cryptoutil.HashString(r.Password) != user.Password {
 		return nil, errors.New("wrong credentials")
 	}
 
-	jws, expirationTime, err := s.cryptoutil.SignUserID(user.Id)
+	result, err := s.cryptoutil.SignUser(user.Id)
 	if err != nil {
 		return nil, err
 	}
 
+	if err = s.repo.Redis.SetStruct(ctx, result.SignId, result, 0); err != nil {
+		return nil, err
+	}
+
 	resp := &res.LoginResponse{
-		JWS:            jws,
-		ExpirationTime: expirationTime,
+		JWS:            result.JWS,
+		ExpirationTime: result.ExpirationTime,
+		RefreshToken:   result.RefreshToken,
 	}
 
 	return resp, nil

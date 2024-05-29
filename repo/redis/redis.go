@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/DanielVieirass/um_help/config"
@@ -35,6 +36,15 @@ func (r *Repo) SetString(ctx context.Context, k string, v string, e time.Duratio
 	}
 
 	return nil
+}
+
+func (r *Repo) SetStruct(ctx context.Context, k string, v interface{}, e time.Duration) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	return r.SetString(ctx, k, string(b), e)
 }
 
 func (r *Repo) GetString(ctx context.Context, k string) (string, error) {

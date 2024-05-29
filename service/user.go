@@ -33,7 +33,7 @@ func (s *UserService) New(ctx context.Context, r *req.NewUser) error {
 		FirstName:      r.FirstName,
 		LastName:       r.LastName,
 		DocumentNumber: r.DocumentNumber,
-		Password:       s.cryptoutil.HashPassword(r.Password),
+		Password:       s.cryptoutil.HashString(r.Password),
 	}
 
 	tx, err := s.repo.MySQL.BeginReadCommittedTx(ctx)
