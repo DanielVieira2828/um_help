@@ -98,7 +98,7 @@ func (c *Cryptoutil) signClaims(claims interface{}) (string, error) {
 }
 
 type TokenClaims struct {
-	UUID           string `json:"jti"`
+	SignId         string `json:"jti"`
 	Issuer         string `json:"iss"`
 	IssuedAt       int64  `json:"iat"`
 	Subject        int64  `json:"sub"`
@@ -106,7 +106,7 @@ type TokenClaims struct {
 }
 
 type RefreshTokenClaims struct {
-	Subject string `json:"sub"`
+	SignId string `json:"jwi"`
 }
 
 type SignResult struct {
@@ -121,7 +121,7 @@ func (c *Cryptoutil) SignUser(userID int64) (*SignResult, error) {
 	expirationTime := time.Now().Add(time.Hour * time.Duration(c.config.CryptoConfig.JWSExpirationTimeInHours)).Unix()
 
 	claims := &TokenClaims{
-		UUID:           uuid.New().String(),
+		SignId:         uuid.New().String(),
 		Issuer:         c.config.InternalConfig.ServiceName,
 		IssuedAt:       now,
 		Subject:        userID,
@@ -134,7 +134,7 @@ func (c *Cryptoutil) SignUser(userID int64) (*SignResult, error) {
 	}
 
 	refreshClaims := &RefreshTokenClaims{
-		Subject: claims.UUID,
+		SignId: claims.SignId,
 	}
 
 	refreshToken, err := c.signClaims(refreshClaims)
@@ -143,7 +143,7 @@ func (c *Cryptoutil) SignUser(userID int64) (*SignResult, error) {
 	}
 
 	return &SignResult{
-		SignId:         claims.UUID,
+		SignId:         claims.SignId,
 		JWS:            jws,
 		ExpirationTime: expirationTime,
 		RefreshToken:   refreshToken,
